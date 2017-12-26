@@ -102,7 +102,6 @@ feedbuilder.panel = Class.create({
             return;
         }
 
-        console.log(id);
         Ext.Ajax.request({
             url: "/admin/feedbuilder/get",
             params: {
@@ -111,7 +110,7 @@ feedbuilder.panel = Class.create({
             success: function (response) {
                 var data = Ext.decode(response.responseText);
 
-                var fieldPanel = new pimcore.report.custom.item(data, this);
+                var fieldPanel = new feedbuilder.panelitem(data, this);
                 pimcore.layout.refresh();
             }.bind(this)
         });
