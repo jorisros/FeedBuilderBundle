@@ -10,7 +10,8 @@ class FeedBuilderBundle extends AbstractPimcoreBundle
     {
         return [
             '/bundles/feedbuilder/js/pimcore/startup.js',
-            '/bundles/feedbuilder/js/pimcore/panel.js'
+            '/bundles/feedbuilder/js/pimcore/panel.js',
+            '/bundles/feedbuilder/js/pimcore/item.js'
         ];
     }
 }
