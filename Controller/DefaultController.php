@@ -3,6 +3,7 @@
 namespace FeedBuilderBundle\Controller;
 
 use FeedBuilderBundle\Entity\Configuration;
+use OutputDataConfigToolkitBundle\Service;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\FrontendController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -61,11 +62,22 @@ class DefaultController extends AdminController
     }
 
     /**
+     * @Route("/channel")
      * @param Request $request
      */
     public function channelAction(Request $request)
     {
+        $channels = Service::getConfig();
 
-        
+        $data = [];
+
+        foreach ($channels['channels'] as $channel) {
+            $data[] =[
+                'name'=>$channel,
+                'abbr' => $channel
+            ];
+        }
+
+        return $this->json($data);
     }
 }

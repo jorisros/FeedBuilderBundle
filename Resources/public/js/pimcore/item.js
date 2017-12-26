@@ -8,21 +8,6 @@ feedbuilder.panelitem = Class.create({
         this.addLayout();
     },
     buildForm: function() {
-        var store = Ext.create('Ext.data.TreeStore', {
-            autoLoad: false,
-            autoSync: true,
-            proxy: {
-                type: 'ajax',
-                url: '/admin/feedbuilder/channel',
-                reader: {
-                    type: 'json'
-                }
-            },
-            root: {
-                iconCls: "pimcore_icon_thumbnails"
-            }
-        });
-
         this.form = new Ext.form.FormPanel({
             border: false,
             items: [{
@@ -39,25 +24,37 @@ feedbuilder.panelitem = Class.create({
                     value: this.data.title,
                     fieldLabel: t("feedbuilder_form_title"),
                     disabled: true
-                },{
-                    xtype: 'combobox',
-                    name: 'defaultUnit',
-                    triggerAction: "all",
-                    editable: true,
-                    typeAhead: true,
-                    selectOnFocus: true,
-                    fieldLabel: t('default_unit'),
-                    store: store,
-                    //value: this.datax.defaultUnit,
-                    displayField: 'abbreviation',
-                    valueField: 'id',
-                    width: 275
-                }
+                },
+                this.getChannelCombo()
                 ]
             }]
         });
 
         return this.form;
+    },
+    getChannelCombo: function() {
+
+        var store = new Ext.data.JsonStore({
+            storeId: 'myStore',
+            proxy: {
+                type: 'ajax',
+                url: '/admin/feedbuilder/channel',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list'
+                }
+            }
+        });
+
+        return new Ext.form.ComboBox({
+            name: 'list',
+            fieldLabel: t('feedbuilder_form_channel'),
+            valueField: 'abbr',
+            displayField: 'name',
+            renderTo: Ext.getBody(),
+            triggerAction: 'all',
+            store: store
+        });
     },
     addLayout: function() {
         var panelButtons = [];
