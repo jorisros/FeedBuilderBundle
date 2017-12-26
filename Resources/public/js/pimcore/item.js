@@ -24,13 +24,85 @@ feedbuilder.panelitem = Class.create({
                     value: this.data.title,
                     fieldLabel: t("feedbuilder_form_title"),
                     disabled: true
-                },
-                this.getChannelCombo()
-                ]
-            }]
-        });
+                    },
+                    this.getChannelCombo()
 
+                ]
+            },
+                {
+                    xtype: "fieldset",
+                    itemId: "selectionFieldset",
+                    title: t("feedbuilder_fieldset_selection_title"),
+                    collapsible: false,
+                    defaults: {
+                        width: 400
+                    },
+                    items: [
+
+                        this.getdrop()
+
+                    ]
+                }]
+        });
         return this.form;
+    },
+    getdrop: function() {
+        var href = {
+            name: 'ss',
+            fieldLabel: t("feedbuilder_form_path")
+        };
+
+        this.component = new Ext.form.TextField(href);
+
+        this.component.on("render", function (el) {
+
+            // add drop zone
+            new Ext.dd.DropZone(el.getEl(), {
+                reference: this,
+                ddGroup: "element",
+                getTargetFromEvent: function (e) {
+                    return this.reference.component.getEl();
+                },
+
+                onNodeOver: function (target, dd, e, data) {
+
+                    var record = data.records[0];
+                    var data = record.data;
+
+                    if(data.elementType != 'document') {
+                        return Ext.dd.DropZone.prototype.dropAllowed;
+                    }else{
+                        return Ext.dd.DropZone.prototype.dropNotAllowed;
+                    }
+
+                }.bind(this),
+
+                onNodeDrop: this.onNodeDrop.bind(this)
+            });
+
+
+            //el.getEl().on("contextmenu", this.onContextMenu.bind(this));
+
+        }.bind(this));
+
+        // disable typing into the textfield
+        this.component.on("keyup", function (element, event) {
+            element.setValue(this.data.path);
+        }.bind(this));
+        
+        return this.component;
+    },
+    onNodeDrop: function (target, dd, e, data) {
+        console.log(data);
+        var record = data.records[0];
+        var data = record.data;
+
+        if(data.elementType != 'document') {
+            this.component.setValue(data.path);
+            return true;
+        }else{
+            return false;
+        }
     },
     getChannelCombo: function() {
 
