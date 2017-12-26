@@ -39,14 +39,44 @@ feedbuilder.panelitem = Class.create({
                     },
                     items: [
 
-                        this.getdrop()
-
+                        this.getPathField(),
+                        this.getIsPublished(),
+                        this.getClasses()
                     ]
                 }]
         });
         return this.form;
     },
-    getdrop: function() {
+    getClasses: function () {
+
+        var store = new Ext.data.JsonStore({
+            storeId: 'myStore',
+            proxy: {
+                type: 'ajax',
+                url: '/admin/class/get-tree',
+                reader: {
+                    type: 'json',
+                }
+            }
+        });
+
+        return new Ext.form.ComboBox({
+            name: 'list',
+            fieldLabel: t('feedbuilder_form_classes'),
+            valueField: 'id',
+            displayField: 'text',
+            renderTo: Ext.getBody(),
+            triggerAction: 'all',
+            store: store
+        });
+    },
+    getIsPublished: function() {
+        return new Ext.form.Checkbox({
+                fieldLabel: t("feedbuilder_form_published"),
+            }
+        );
+    },
+    getPathField: function() {
         var href = {
             name: 'ss',
             fieldLabel: t("feedbuilder_form_path")
@@ -93,7 +123,6 @@ feedbuilder.panelitem = Class.create({
         return this.component;
     },
     onNodeDrop: function (target, dd, e, data) {
-        console.log(data);
         var record = data.records[0];
         var data = record.data;
 
