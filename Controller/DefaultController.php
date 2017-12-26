@@ -56,4 +56,12 @@ class DefaultController extends AdminController
         ];
         return $this->json($data);
     }
+
+    /**
+     * @param Request $request
+     */
+    public function channelAction(Request $request)
+    {
+
+    }
 }
