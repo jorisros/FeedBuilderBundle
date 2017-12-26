@@ -69,7 +69,7 @@ feedbuilder.panelitem = Class.create({
                     var record = data.records[0];
                     var data = record.data;
 
-                    if(data.elementType != 'document') {
+                    if(data.elementType == 'object') {
                         return Ext.dd.DropZone.prototype.dropAllowed;
                     }else{
                         return Ext.dd.DropZone.prototype.dropNotAllowed;
@@ -97,7 +97,7 @@ feedbuilder.panelitem = Class.create({
         var record = data.records[0];
         var data = record.data;
 
-        if(data.elementType != 'document') {
+        if(data.elementType == 'object') {
             this.component.setValue(data.path);
             return true;
         }else{
