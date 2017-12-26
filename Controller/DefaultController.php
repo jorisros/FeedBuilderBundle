@@ -28,7 +28,10 @@ class DefaultController extends AdminController
             $data[] =
                 [
                     'id'=>$feed->getId(),
-                    'text'=>$feed->getTitle()
+                    'text'=>$feed->getTitle(),
+                    'configuration'=>[
+                        'channel'=>1
+                    ]
                 ];
         }
 
@@ -63,5 +66,6 @@ class DefaultController extends AdminController
     public function channelAction(Request $request)
     {
 
+        
     }
 }
