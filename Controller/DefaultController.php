@@ -80,4 +80,13 @@ class DefaultController extends AdminController
 
         return $this->json($data);
     }
+
+    /**
+     * @Route("/provider")
+     * @param Request $request
+     */
+    public function providerAction(Request $request)
+    {
+
+    }
 }
