@@ -35,7 +35,7 @@ class DefaultController extends AdminController
                     'configuration'=>[
                         'channel'=>$feed->get('channel'),
                         'ipaddress'=>$feed->get('ipaddress'),
-                        'path   '=>$feed->get('path'),
+                        'path'=>$feed->get('path'),
                         'published'=>$feed->get('published'),
                         'class'=>$feed->get('class'),
                     ]
@@ -67,7 +67,7 @@ class DefaultController extends AdminController
             'configuration'=>[
                 'channel'=>$feed->get('channel'),
                 'ipaddress'=>$feed->get('ipaddress'),
-                'path   '=>$feed->get('path'),
+                'path'=>$feed->get('path'),
                 'published'=>$feed->get('published'),
                 'class'=>$feed->get('class'),
             ]
