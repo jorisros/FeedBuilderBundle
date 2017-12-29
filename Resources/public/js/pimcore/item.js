@@ -2,7 +2,6 @@ pimcore.registerNS("feedbuilder.panelitem");
 
 feedbuilder.panelitem = Class.create({
     initialize: function (data, parentPanel) {
-        console.log(data);
         this.parentPanel = parentPanel;
         this.data = data;
         this.addLayout();
@@ -21,7 +20,7 @@ feedbuilder.panelitem = Class.create({
                 items: [{
                     xtype: "textfield",
                     name: "name",
-                    value: this.data.title,
+                    value: this.data.text,
                     fieldLabel: t("feedbuilder_form_title"),
                     disabled: true
                     },
@@ -37,20 +36,38 @@ feedbuilder.panelitem = Class.create({
                     defaults: {
                         width: 400
                     },
-                    items: [
+                    items: [{
+                        xtype: "textfield",
+                        name: "ipaddress",
+                        value: this.data.configuration.ipaddress,
+                        fieldLabel: t("feedbuilder_form_ipaddress"),
+                        disabled: false
+                    },
 
                         this.getPathField(),
                         this.getIsPublished(),
-                        this.getClasses()
+                        this.getClasses(),
+                        this.getUrl()
                     ]
                 }]
         });
         return this.form;
     },
+    getUrl: function() {
+        return new Ext.Panel({
+            value: 'jorisje',
+            border: false,
+            disabled: false,
+            html: '<br><br>Url<br><a href="">some text here</a>'
+
+        });
+
+    },
     getClasses: function () {
 
         var store = new Ext.data.JsonStore({
             storeId: 'myStore',
+            autoLoad: true,
             proxy: {
                 type: 'ajax',
                 url: '/admin/class/get-tree',
@@ -67,19 +84,23 @@ feedbuilder.panelitem = Class.create({
             displayField: 'text',
             renderTo: Ext.getBody(),
             triggerAction: 'all',
-            store: store
+            store: store,
+            value: this.data.configuration.class,
         });
     },
     getIsPublished: function() {
         return new Ext.form.Checkbox({
                 fieldLabel: t("feedbuilder_form_published"),
+                value: this.data.configuration.published,
+                name: 'published'
             }
         );
     },
     getPathField: function() {
         var href = {
-            name: 'ss',
-            fieldLabel: t("feedbuilder_form_path")
+            name: 'path',
+            fieldLabel: t("feedbuilder_form_path"),
+            value: this.data.configuration.path,
         };
 
         this.component = new Ext.form.TextField(href);
@@ -137,6 +158,7 @@ feedbuilder.panelitem = Class.create({
 
         var store = new Ext.data.JsonStore({
             storeId: 'myStore',
+            autoLoad: true,
             proxy: {
                 type: 'ajax',
                 url: '/admin/feedbuilder/channel',
@@ -154,7 +176,8 @@ feedbuilder.panelitem = Class.create({
             displayField: 'name',
             renderTo: Ext.getBody(),
             triggerAction: 'all',
-            store: store
+            store: store,
+            value: this.data.configuration.channel,
         });
     },
     addLayout: function() {
@@ -179,7 +202,7 @@ feedbuilder.panelitem = Class.create({
                 //this.getChartDefinitionPanel()
             ],
             buttons: panelButtons,
-            title: this.data.title,
+            title: this.data.text,
             bodyStyle: "padding: 20px;",
             closable: true,
             listeners: {
