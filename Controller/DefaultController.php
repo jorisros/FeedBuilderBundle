@@ -2,7 +2,7 @@
 
 namespace FeedBuilderBundle\Controller;
 
-use FeedBuilderBundle\Entity\Configuration;
+use FeedBuilderBundle\Service\ExportProviderService;
 use OutputDataConfigToolkitBundle\Service;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\FrontendController;
@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends AdminController
 {
+    const LOCATION_FILE = 'feedbuilder.php';
     /**
      * @Route("/tree")
      */
@@ -19,19 +20,24 @@ class DefaultController extends AdminController
     {
         $data = [];
 
-        $feeds = $this->getDoctrine()
-            ->getRepository(Configuration::class)
-            ->findAll();
+
+        $systemConfigFile = \Pimcore\Config::locateConfigFile(DefaultController::LOCATION_FILE);
+
+        $config = new \Pimcore\Config\Config(include($systemConfigFile));
 
         /** @var Configuration $feed */
-        foreach ($feeds as $feed)
+        foreach ($config->get('feeds') as $id=>$feed)
         {
             $data[] =
                 [
-                    'id'=>$feed->getId(),
-                    'text'=>$feed->getTitle(),
+                    'id'=>$id,
+                    'text'=>$feed->get('title'),
                     'configuration'=>[
-                        'channel'=>1
+                        'channel'=>$feed->get('channel'),
+                        'ipaddress'=>$feed->get('ipaddress'),
+                        'path   '=>$feed->get('path'),
+                        'published'=>$feed->get('published'),
+                        'class'=>$feed->get('class'),
                     ]
                 ];
         }
@@ -49,15 +55,24 @@ class DefaultController extends AdminController
     {
         $data = [];
 
-        /** @var Configuration $feed */
-        $feed = $this->getDoctrine()
-            ->getRepository(Configuration::class)
-            ->find($request->get('id'));
+        $systemConfigFile = \Pimcore\Config::locateConfigFile(DefaultController::LOCATION_FILE);
+
+        $config = new \Pimcore\Config\Config(include($systemConfigFile));
+
+        $feed = $config->get('feeds')[$request->get('id')];
 
         $data = [
-            'id'=>$feed->getId(),
-            'title'=>$feed->getTitle()
+            'id'=>$request->get('id'),
+            'text'=>$feed->get('title'),
+            'configuration'=>[
+                'channel'=>$feed->get('channel'),
+                'ipaddress'=>$feed->get('ipaddress'),
+                'path   '=>$feed->get('path'),
+                'published'=>$feed->get('published'),
+                'class'=>$feed->get('class'),
+            ]
         ];
+
         return $this->json($data);
     }
 
@@ -87,6 +102,7 @@ class DefaultController extends AdminController
      */
     public function providerAction(Request $request)
     {
-
+        ExportProviderService::getProviders('Provider');
+        die();
     }
 }
