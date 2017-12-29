@@ -16,6 +16,10 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    FeedBuilderBundle\EventListener\ObjectListener:
+        tags:
+            - { name: kernel.event_listener, event: pimcore.dataobject.postAdd, method: doExport }
+            - { name: kernel.event_listener, event: pimcore.dataobject.postUpdate, method: doExport }
 # add more services, or override services that need manual wiring
 #    FeedBuilderBundle\ExampleClass:
 #        arguments:
