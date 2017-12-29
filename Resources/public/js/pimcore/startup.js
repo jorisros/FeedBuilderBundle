@@ -19,7 +19,8 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
 
             var importMenu = new Ext.Action({
                 text: t('feedbuilder_text'),
-                iconCls: 'feedbuilder_text_icon',
+                icon: '/bundles/feedbuilder/img/svg/multiple_outputs.svg',
+
                 handler: this.getPanel()
             });
 
@@ -36,7 +37,7 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
             this.panel = new Ext.Panel({
                 id: "feedbuilder_editor",
                 title: t("feedbuilder_title"),
-                iconCls: "pimcore_icon_operator_merge",
+                icon: '/bundles/feedbuilder/img/svg/multiple_outputs.svg',
                 layout: "fit",
                 closable:true,
                 items: [editor.getTabPanel()]
