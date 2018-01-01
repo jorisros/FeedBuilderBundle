@@ -3,6 +3,7 @@
 namespace FeedBuilderBundle\Controller;
 
 use FeedBuilderBundle\Service\ExportProviderService;
+use FeedBuilderBundle\Service\FeedBuilderService;
 use OutputDataConfigToolkitBundle\Service;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\FrontendController;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends AdminController
 {
-    const LOCATION_FILE = 'feedbuilder.php';
+
     /**
      * @Route("/tree")
      */
@@ -20,10 +21,7 @@ class DefaultController extends AdminController
     {
         $data = [];
 
-
-        $systemConfigFile = \Pimcore\Config::locateConfigFile(DefaultController::LOCATION_FILE);
-
-        $config = new \Pimcore\Config\Config(include($systemConfigFile));
+        $config = FeedBuilderService::getConfig();
 
         /** @var Configuration $feed */
         foreach ($config->get('feeds') as $id=>$feed)
@@ -55,9 +53,7 @@ class DefaultController extends AdminController
     {
         $data = [];
 
-        $systemConfigFile = \Pimcore\Config::locateConfigFile(DefaultController::LOCATION_FILE);
-
-        $config = new \Pimcore\Config\Config(include($systemConfigFile));
+        $config = FeedBuilderService::getConfig();
 
         $feed = $config->get('feeds')[$request->get('id')];
 
