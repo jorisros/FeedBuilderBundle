@@ -4,6 +4,10 @@ php:
   - 7.0
   - 7.1
 
+services:
+  - mysql
+
 before_script:
+  - mysql -e 'CREATE DATABASE travis_test charset=utf8mb4;'
   - curl -s http://getcomposer.org/installer | php --
   - composer create-project -s dev pimcore/pimcore ./travis-pimcore dev-master
