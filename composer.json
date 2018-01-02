@@ -1,0 +1,23 @@
+{
+    "name": "jorisros/feed-builder-bundle",
+    "description": "Bundle that based on output channel bundle, this bundle can be triggered by publish a object or by commandline.",
+    "type": "pimcore-bundle",
+    "require": {
+        "pimcore/pimcore": "~5.1.0",
+        "pimcore/output-data-config-toolkit-bundle": "^2.2"
+    },
+    "license": "MIt",
+    "authors": [
+        {
+            "name": "Joris Ros",
+            "email": "joris.ros@gmail.com"
+        }
+    ],
+    "extra": {
+        "pimcore": {
+            "bundles": [
+                "FeedBuilderBundle\\FeedBuilderBundle"
+            ]
+        }
+    }
+}
