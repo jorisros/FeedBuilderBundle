@@ -70,7 +70,7 @@ feedbuilder.panelitem = Class.create({
             autoLoad: true,
             proxy: {
                 type: 'ajax',
-                url: '/admin/class/get-tree',
+                url: '/admin/feedbuilder/get-classes',
                 reader: {
                     type: 'json',
                 }
