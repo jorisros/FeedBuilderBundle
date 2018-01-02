@@ -12,6 +12,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+
+/**
+ * Class AdminInterfaceController
+ * @package FeedBuilderBundle\Controller
+ * @Route("/admin/feedbuilder")
+ */
 class AdminInterfaceController extends AdminController
 {
 

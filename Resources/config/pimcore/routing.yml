@@ -1,5 +1,3 @@
 feed_builder:
     resource: "@FeedBuilderBundle/Controller/"
     type:     annotation
-    prefix:   /admin/feedbuilder
-
