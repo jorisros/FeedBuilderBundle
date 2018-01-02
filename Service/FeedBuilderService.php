@@ -9,11 +9,9 @@
 namespace FeedBuilderBundle\Service;
 
 use FeedBuilderBundle\Event\FeedBuilderEvent;
+use OutputDataConfigToolkitBundle\Service;
 use Pimcore\Config;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Product;
-use Pimcore\Model\Object;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class FeedBuilderService
@@ -74,13 +72,11 @@ class FeedBuilderService
      */
     public function run(Config\Config $config) {
 
-
         $event = new FeedBuilderEvent();
         $event->setConfig($config);
 
         $config = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_RUN, $event)->getConfig();
 
-        var_dump($config);
         $class = $config->get('class');
         $listing = $class.'\Listing';
 
@@ -97,8 +93,14 @@ class FeedBuilderService
             $event->setObject($object);
             $object = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
 
-            //@TODO Load the output configuration
-            $event->setArray([]);
+            $specificationOutputChannel = Service::getOutputDataConfig($object,$config->get('channel'));
+
+            $arrProperties = [];
+            foreach($specificationOutputChannel as $property) {
+                $arrProperties[$property->getLabeledValue($object)->label] = $property->getLabeledValue($object)->value;
+            }
+
+            $event->setArray($arrProperties);
             $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
             $result[] = $arr;
         }
