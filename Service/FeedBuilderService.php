@@ -14,9 +14,16 @@ use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Product;
 use Pimcore\Model\Object;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class FeedBuilderService
 {
+    private $dispatcher = null;
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
     const LOCATION_FILE = 'feedbuilder.php';
 
     /**
@@ -66,12 +73,14 @@ class FeedBuilderService
      * @param Config\Config $config
      */
     public function run(Config\Config $config) {
-        $eventDispatcher = new EventDispatcher();
+
 
         $event = new FeedBuilderEvent();
         $event->setConfig($config);
-        $config = $eventDispatcher->dispatch(FeedBuilderEvent::BEFORE_RUN, $event)->getConfig();
 
+        $config = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_RUN, $event)->getConfig();
+
+        var_dump($config);
         $class = $config->get('class');
         $listing = $class.'\Listing';
 
@@ -79,21 +88,22 @@ class FeedBuilderService
         $criteria->setUnpublished(!$config->get('published'));
         $event->setListing($criteria);
 
-        $criteria = $eventDispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
+        $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
         $objects = $criteria->load();
 
         $result = [];
         /** @var Concrete $object */
         foreach ($objects as $object){
             $event->setObject($object);
-            $object = $eventDispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
+            $object = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
 
             //@TODO Load the output configuration
             $event->setArray([]);
-            $arr = $eventDispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
+            $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
             $result[] = $arr;
         }
         $event->setResult($result);
-        $eventDispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
+
+        $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
     }
 }
