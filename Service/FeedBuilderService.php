@@ -56,7 +56,7 @@ class FeedBuilderService
 
         if(is_string($id)){
             foreach ($config->get('feeds') as $feed) {
-                if($feed->get('channel') === $id) {
+                if($feed->get('title') === $id) {
                     return $feed;
                 }
             }
