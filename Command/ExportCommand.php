@@ -2,6 +2,7 @@
 
 namespace FeedBuilderBundle\Command;
 
+use FeedBuilderBundle\Service\FeedBuilderService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,21 +14,21 @@ class ExportCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('feedbuilder:run')
-            ->setDescription('Run the feedbuilder by ID')
-            ->addArgument('feed_id', InputArgument::OPTIONAL, 'Argument description')
-            //->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
+            ->setName('export:run')
+            ->setDescription('Run the feedbuilder by ID to execute the export')
+            ->addArgument('feed_id', InputArgument::OPTIONAL, 'Give the feed id to run export')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $argument = $input->getArgument('argument');
+        $argument = $input->getArgument('feed_id');
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+        //@TODO Fix the name of the profile to make it dynamic from cli
+        $profile = FeedBuilderService::getConfigOfProfile(1);
 
+        $feedbuilder = new FeedBuilderService($this->getContainer()->get('event_dispatcher'));
+        $feedbuilder->run($profile);
         $output->writeln('Command result.');
     }
 
