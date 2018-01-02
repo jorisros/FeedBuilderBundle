@@ -102,10 +102,12 @@ class FeedBuilderService
 
             $event->setArray($arrProperties);
             $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
-            $result[] = $arr;
+            $result[$config->get('root')][] = $arr;
         }
         $event->setResult($result);
 
-        $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
+        $result = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
+
+        return $result;
     }
 }
