@@ -9,6 +9,7 @@ services:
         # if you need to do this, you can override this setting on individual services
         public: false
 
+
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services
     FeedBuilderBundle\Controller\:
@@ -20,6 +21,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: pimcore.dataobject.postAdd, method: doExport }
             - { name: kernel.event_listener, event: pimcore.dataobject.postUpdate, method: doExport }
+
+    FeedBuilderBundle\EventListener\ExportExample:
+        tags:
+            - { name: kernel.event_listener, event: feedbuilder.after.run, method: fileHandler }
 # add more services, or override services that need manual wiring
 #    FeedBuilderBundle\ExampleClass:
 #        arguments:
