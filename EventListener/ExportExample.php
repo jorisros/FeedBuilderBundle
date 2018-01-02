@@ -9,8 +9,6 @@
 namespace FeedBuilderBundle\EventListener;
 
 use FeedBuilderBundle\Event\FeedBuilderEvent;
-use FeedBuilderBundle\FeedBuilderBundle;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ExportExample
 {
@@ -28,7 +26,6 @@ class ExportExample
             if(!file_exists($dir)){
                 mkdir($dir);
             }
-            
             file_put_contents($dir.DIRECTORY_SEPARATOR.$name,json_encode($arr, JSON_PRETTY_PRINT));
         }
     }
