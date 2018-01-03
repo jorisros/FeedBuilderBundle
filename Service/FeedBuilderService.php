@@ -24,6 +24,11 @@ class FeedBuilderService
 
     const LOCATION_FILE = 'feedbuilder.php';
 
+    const TYPE_OBJECT = 1;
+    const TYPE_EXPORT = 2;
+    const TYPE_FEED = 3;
+
+
     /**
      * Returns the config file for the feedbuilder, see the feedbuilder.example.php
      *
