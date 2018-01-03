@@ -66,7 +66,42 @@ feedbuilder.panel = Class.create({
         return this.tree;
     },
     addField: function(){
+        Ext.MessageBox.prompt(t('feedbuilder_title_create_new'), t('feedbuilder_enter_the_name_of_the_new_feed') + " (a-zA-Z-_)",
+            this.addFeed.bind(this), null, null, "");
         return {};
+    },
+    addFeed: function(button, value, object){
+        var regresult = value.match(/[a-zA-Z0-9_\-]+/);
+        if (button == "ok" && value.length > 2 && regresult == value) {
+
+
+            Ext.Ajax.request({
+                url: "/admin/feedbuilder/add",
+                params: {
+                    title: value
+                },
+                success: function (response) {
+                    var data = Ext.decode(response.responseText);
+
+                    console.log(data);
+                    this.tree.getStore().load({
+                        node: this.tree.getRootNode()
+                    });
+
+                    if(!data || !data.success) {
+                        //Ext.Msg.alert(t('add_custom_report'), t('problem_creating_new_custom_report'));
+                    } else {
+                        this.openConfig(data.id);
+                    }
+                }.bind(this)
+            });
+        }
+        else if (button == "cancel") {
+            return;
+        }
+        else {
+            Ext.Msg.alert(t('error'), t('problem_creating_new_feed'));
+        }
     },
     getTreeNodeListeners: function () {
         var treeNodeListeners = {

@@ -156,4 +156,38 @@ class AdminInterfaceController extends AdminController
        // ExportProviderService::getProviders('Provider');
         return $this->json(['success' => true]);
     }
+
+    /**
+     *
+     * @Route("/add")
+     * @param Request $request
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function addAction(Request $request)
+    {
+        $config = [
+            'title'=>$request->get('title'),
+            'channel'=>$request->get('channel'),
+            'ipaddress'=>$request->get('ipaddress'),
+            'path'=>$request->get('path'),
+            'published'=>$request->get('published'),
+            'class'=>$request->get('class'),
+            'root'=>$request->get('root'),
+            'type'=>$request->get('type')
+        ];
+
+        /** @var Config $current */
+        $current = FeedBuilderService::getConfig();
+        $arr = $current->toArray();
+        $arr['feeds'][] = $config;
+
+        $configFile = \Pimcore\Config::locateConfigFile(FeedBuilderService::LOCATION_FILE);
+
+        File::putPhpFile($configFile, to_php_data_file_format($arr));
+
+
+        // ExportProviderService::getProviders('Provider');
+        return $this->json(['success' => true, 'id'=>end(array_keys($arr['feeds']))]);
+    }
 }
