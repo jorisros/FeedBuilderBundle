@@ -31,22 +31,11 @@ feedbuilder.panelitem = Class.create({
                         // Arrange radio buttons into two columns, distributed vertically
                         columns: 1,
                         vertical: true,
-                        id: "colorgroup",
                         items: [
                             { boxLabel: t('feedbuilder_form_type_object'), name: 'type', inputValue: '1' },
                             { boxLabel: t('feedbuilder_form_type_export'), name: 'type', inputValue: '2'},
                             { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: '3' }
                         ],
-                        tbar        : [
-                            {
-                                text    : 'setValue on RadioGroup',
-                                handler : function () {
-                                    form.child('radiogroup').setValue({
-                                        rb : '2'
-                                    });
-                                }
-                            }
-                        ]
                     },
                     {
                         xtype: "textfield",
@@ -217,13 +206,15 @@ feedbuilder.panelitem = Class.create({
             handler: this.save.bind(this)
         },{
             text: t("save"),
-            iconCls: "pimcore_icon_apply",
+            iconCls: "pimcore_icon_save_white",
+            cls: "pimcore_save_button",
+            scale: "small",
             handler: this.save.bind(this)
         });
 
         this.panel = new Ext.Panel({
             region: "center",
-            id: "pimcore_sql_panel_" + this.data.title,
+            id: "pimcore_feed_panel_" + this.data.id,
             labelWidth: 150,
             autoScroll: true,
             border: false,
