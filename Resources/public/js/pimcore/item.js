@@ -47,7 +47,7 @@ feedbuilder.panelitem = Class.create({
                         this.getPathField(),
                         this.getIsPublished(),
                         this.getClasses(),
-                        this.getUrl()
+                        //this.getUrl()
                     ]
                 }]
         });
