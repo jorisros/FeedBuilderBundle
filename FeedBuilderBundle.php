@@ -14,4 +14,13 @@ class FeedBuilderBundle extends AbstractPimcoreBundle
             '/bundles/feedbuilder/js/pimcore/item.js'
         ];
     }
+
+    /**
+     *
+     * @return Installer|null|\Pimcore\Extension\Bundle\Installer\InstallerInterface|void
+     */
+    public function getInstaller()
+    {
+        return new Installer();
+    }
 }
