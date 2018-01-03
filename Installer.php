@@ -33,7 +33,7 @@ class Installer extends AbstractInstaller
     public function install()
     {
         if(!$this->isInstalled()) {
-            copy(__DIR__ . "/Resources/config/pimcore/feedbuilder.example.php", PIMCORE_PRIVATE_VAR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "test.php");
+            copy(__DIR__ . "/Resources/config/pimcore/feedbuilder.example.php", PIMCORE_PRIVATE_VAR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . FeedBuilderService::LOCATION_FILE);
         }
     }
 
