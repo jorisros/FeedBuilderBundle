@@ -3,7 +3,7 @@
     "description": "Bundle that based on output channel bundle, this bundle can be triggered by publish a object or by commandline.",
     "type": "pimcore-bundle",
     "require": {
-        "pimcore/pimcore": "~v5.1.0",
+        "pimcore/core-version": "~5.1.0",
         "pimcore/output-data-config-toolkit-bundle": "^2.2"
     },
     "license": "MIt",
