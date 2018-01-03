@@ -211,7 +211,11 @@ feedbuilder.panelitem = Class.create({
     },
     addLayout: function() {
         var panelButtons = [];
-        panelButtons.push({
+        panelButtons.push('->',{
+            text: t("delete"),
+            iconCls: "pimcore_icon_delete",
+            handler: this.save.bind(this)
+        },{
             text: t("save"),
             iconCls: "pimcore_icon_apply",
             handler: this.save.bind(this)
@@ -230,7 +234,7 @@ feedbuilder.panelitem = Class.create({
                // this.columnGrid,
                 //this.getChartDefinitionPanel()
             ],
-            buttons: panelButtons,
+            bbar: panelButtons,
             title: this.data.text,
             bodyStyle: "padding: 20px;",
             closable: true,
