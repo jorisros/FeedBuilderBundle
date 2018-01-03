@@ -19,7 +19,7 @@ feedbuilder.panelitem = Class.create({
                 },
                 items: [{
                     xtype: "textfield",
-                    name: "name",
+                    name: "text",
                     value: this.data.text,
                     fieldLabel: t("feedbuilder_form_title"),
                     disabled: true
@@ -31,16 +31,27 @@ feedbuilder.panelitem = Class.create({
                         // Arrange radio buttons into two columns, distributed vertically
                         columns: 1,
                         vertical: true,
+                        id: "colorgroup",
                         items: [
-                            { boxLabel: t('feedbuilder_form_type_object'), name: 'rb', inputValue: '1' },
-                            { boxLabel: t('feedbuilder_form_type_export'), name: 'rb', inputValue: '2'},
-                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'rb', inputValue: '3' }
+                            { boxLabel: t('feedbuilder_form_type_object'), name: 'type', inputValue: '1' },
+                            { boxLabel: t('feedbuilder_form_type_export'), name: 'type', inputValue: '2'},
+                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: '3' }
+                        ],
+                        tbar        : [
+                            {
+                                text    : 'setValue on RadioGroup',
+                                handler : function () {
+                                    form.child('radiogroup').setValue({
+                                        rb : '2'
+                                    });
+                                }
+                            }
                         ]
                     },
                     {
                         xtype: "textfield",
                         name: "root",
-                        value: this.data.root,
+                        value: this.data.configuration.root,
                         fieldLabel: t("feedbuilder_form_root")
                     }
 
@@ -96,7 +107,7 @@ feedbuilder.panelitem = Class.create({
         });
 
         return new Ext.form.ComboBox({
-            name: 'list',
+            name: 'class',
             fieldLabel: t('feedbuilder_form_classes'),
             valueField: 'id',
             displayField: 'text',
@@ -188,7 +199,7 @@ feedbuilder.panelitem = Class.create({
         });
 
         return new Ext.form.ComboBox({
-            name: 'list',
+            name: 'channel',
             fieldLabel: t('feedbuilder_form_channel'),
             valueField: 'abbr',
             displayField: 'name',
@@ -234,7 +245,26 @@ feedbuilder.panelitem = Class.create({
         pimcore.layout.refresh();
     },
     save: function() {
+        var allValues = this.form.getForm().getFieldValues();
+        allValues.id = this.data.id;
+        allValues.title = this.data.text;
+        Ext.Ajax.request({
+            url: "/admin/feedbuilder/save",
+            method: "post",
+            params: allValues,
+            success: this.saveOnComplete.bind(this)
+        });
         return {};
+    },
+    saveOnComplete: function () {
+       // this.parentPanel.tree.getStore().load();
+        pimcore.helpers.showNotification(t("success"), t("saved_successfully"), "success");
+/*
+        Ext.MessageBox.confirm(t("info"), t("reload_pimcore_changes"), function (buttonValue) {
+            if (buttonValue == "yes") {
+                window.location.reload();
+            }
+        }.bind(this));*/
     }
 
 });
