@@ -6,6 +6,8 @@ use FeedBuilderBundle\Service\ExportProviderService;
 use FeedBuilderBundle\Service\FeedBuilderService;
 use OutputDataConfigToolkitBundle\Service;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Config\Config;
+use Pimcore\File;
 use Pimcore\Model\DataObject;
 use Pimcore\Controller\FrontendController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -37,17 +39,24 @@ class AdminInterfaceController extends AdminController
                 [
                     'id'=>$id,
                     'text'=>$feed->get('title'),
-                    'configuration'=>[
-                        'channel'=>$feed->get('channel'),
-                        'ipaddress'=>$feed->get('ipaddress'),
-                        'path'=>$feed->get('path'),
-                        'published'=>$feed->get('published'),
-                        'class'=>$feed->get('class'),
-                    ]
+                    'configuration'=>$this->getConfiguration($feed)
                 ];
         }
 
         return $this->json($data);
+    }
+
+    private function getConfiguration(Config $feed)
+    {
+        return [
+            'channel'=>$feed->get('channel'),
+            'ipaddress'=>$feed->get('ipaddress'),
+            'path'=>$feed->get('path'),
+            'published'=>$feed->get('published'),
+            'class'=>$feed->get('class'),
+            'root'=>$feed->get('root'),
+            'type'=>$feed->get('type')
+        ];
     }
 
     /**
@@ -91,13 +100,7 @@ class AdminInterfaceController extends AdminController
         $data = [
             'id'=>$request->get('id'),
             'text'=>$feed->get('title'),
-            'configuration'=>[
-                'channel'=>$feed->get('channel'),
-                'ipaddress'=>$feed->get('ipaddress'),
-                'path'=>$feed->get('path'),
-                'published'=>$feed->get('published'),
-                'class'=>$feed->get('class'),
-            ]
+            'configuration'=>$this->getConfiguration($feed)
         ];
 
         return $this->json($data);
@@ -124,12 +127,33 @@ class AdminInterfaceController extends AdminController
     }
 
     /**
-     * @Route("/provider")
+     * @Route("/save")
      * @param Request $request
      */
     public function providerAction(Request $request)
     {
-        ExportProviderService::getProviders('Provider');
-        die();
+        $config = [
+            'title'=>$request->get('title'),
+            'channel'=>$request->get('channel'),
+            'ipaddress'=>$request->get('ipaddress'),
+            'path'=>$request->get('path'),
+            'published'=>$request->get('published'),
+            'class'=>$request->get('class'),
+            'root'=>$request->get('root'),
+            'type'=>$request->get('type')
+        ];
+
+        /** @var Config $current */
+        $current = FeedBuilderService::getConfig();
+        $arr = $current->toArray();
+        $arr['feeds'][$request->get('id')] = $config;
+
+        $configFile = \Pimcore\Config::locateConfigFile(FeedBuilderService::LOCATION_FILE);
+
+        File::putPhpFile($configFile, to_php_data_file_format($arr));
+
+
+       // ExportProviderService::getProviders('Provider');
+        return $this->json(['success' => true]);
     }
 }
