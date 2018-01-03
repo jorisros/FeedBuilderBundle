@@ -1,0 +1,10 @@
+feedbuilder_title: 'Feedbuilder'
+feedbuilder_add: 'Add feed'
+feedbuilder_fieldset_title: 'General settings'
+feedbuilder_form_title: 'Name'
+feedbuilder_form_channel: 'Output channel'
+feedbuilder_fieldset_selection_title: 'Selection criteria'
+feedbuilder_form_classes: 'Class'
+feedbuilder_form_ipaddress: Ipaddress
+feedbuilder_form_published: 'Only published'
+feedbuilder_form_path: Path
