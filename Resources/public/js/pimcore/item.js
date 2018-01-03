@@ -24,7 +24,25 @@ feedbuilder.panelitem = Class.create({
                     fieldLabel: t("feedbuilder_form_title"),
                     disabled: true
                     },
-                    this.getChannelCombo()
+                    this.getChannelCombo(),
+                    {
+                        xtype: 'radiogroup',
+                        fieldLabel: t('feedbuilder_form_type'),
+                        // Arrange radio buttons into two columns, distributed vertically
+                        columns: 1,
+                        vertical: true,
+                        items: [
+                            { boxLabel: t('feedbuilder_form_type_object'), name: 'rb', inputValue: '1' },
+                            { boxLabel: t('feedbuilder_form_type_export'), name: 'rb', inputValue: '2'},
+                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'rb', inputValue: '3' }
+                        ]
+                    },
+                    {
+                        xtype: "textfield",
+                        name: "root",
+                        value: this.data.root,
+                        fieldLabel: t("feedbuilder_form_root")
+                    }
 
                 ]
             },
