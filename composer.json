@@ -13,6 +13,11 @@
             "email": "joris.ros@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "FeedBuilderBundle\\": "/"
+        }
+    },
     "extra": {
         "pimcore": {
             "bundles": [
