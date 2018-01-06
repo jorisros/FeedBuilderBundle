@@ -7,7 +7,7 @@ feedbuilder_form_channel: 'Output channel'
 feedbuilder_fieldset_selection_title: 'Selection criteria'
 feedbuilder_form_classes: 'Class'
 feedbuilder_form_ipaddress: Ipaddress
-feedbuilder_form_published: 'Only published'
+feedbuilder_form_published: 'Unpublished'
 feedbuilder_form_path: Path
 feedbuilder_form_type: 'Type'
 feedbuilder_form_type_object: 'Object save'
