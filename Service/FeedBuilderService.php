@@ -10,6 +10,7 @@ namespace FeedBuilderBundle\Service;
 
 use FeedBuilderBundle\Event\FeedBuilderEvent;
 use OutputDataConfigToolkitBundle\Service;
+use Pimcore\Cache;
 use Pimcore\Config;
 use Pimcore\Model\DataObject\Concrete;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -82,37 +83,43 @@ class FeedBuilderService
 
         $config = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_RUN, $event)->getConfig();
 
-        $class = $config->get('class');
-        $listing = $class.'\Listing';
+        if(!$result = Cache::load('feedbuilder-'.$config->get('title'))) {
 
-        $criteria = new $listing();
-        $published = $config->get('published') === 'true'? true: false;
-        $criteria->setUnpublished($published);
-        $event->setListing($criteria);
+            $class = $config->get('class');
+            $listing = $class . '\Listing';
 
-        $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
-        $objects = $criteria->load();
+            $criteria = new $listing();
+            $published = $config->get('published') === 'true' ? true : false;
+            $criteria->setUnpublished($published);
+            $event->setListing($criteria);
 
-        $result = [];
-        /** @var Concrete $object */
-        foreach ($objects as $object){
-            $event->setObject($object);
-            $object = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
+            $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
+            $objects = $criteria->load();
 
-            $specificationOutputChannel = Service::getOutputDataConfig($object,$config->get('channel'));
+            $result = [];
+            /** @var Concrete $object */
+            foreach ($objects as $object) {
+                $event->setObject($object);
+                $object = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
 
-            $arrProperties = [];
-            foreach($specificationOutputChannel as $property) {
-                $arrProperties[$property->getLabeledValue($object)->label] = $property->getLabeledValue($object)->value;
+                $specificationOutputChannel = Service::getOutputDataConfig($object, $config->get('channel'));
+
+                $arrProperties = [];
+                foreach ($specificationOutputChannel as $property) {
+                    $arrProperties[$property->getLabeledValue($object)->label] = $property->getLabeledValue($object)->value;
+                }
+
+                $event->setArray($arrProperties);
+                $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
+                $result[$config->get('root')][] = $arr;
             }
+            $event->setResult($result);
 
-            $event->setArray($arrProperties);
-            $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
-            $result[$config->get('root')][] = $arr;
+            $result = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
+
+            Cache::save($result, 'feedbuilder-' . $config->get('title'), ['output'], 3600);
         }
-        $event->setResult($result);
 
-        $result = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
 
         return $result;
     }
