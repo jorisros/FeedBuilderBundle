@@ -42,11 +42,14 @@ class FeedController extends FrontendController
 
         $config = FeedBuilderService::getConfigOfProfile($request->get('slug'));
 
+        if($config->get('type') != FeedBuilderService::TYPE_FEED){
+            throw new NotFoundHttpException('Feed not found.');
+        }
+
         $feedbuilder = new FeedBuilderService($this->get('event_dispatcher'));
         $result = $feedbuilder->run($config);
 
         //@TODO Add check for ipaddress
-        //@TODO Add check for type feed
         switch($request->get('_format')){
             case 'xml':
                 return $this->XMLResponse($result, $config);
