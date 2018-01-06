@@ -244,7 +244,7 @@ feedbuilder.panelitem = Class.create({
         panelButtons.push('->',{
             text: t("delete"),
             iconCls: "pimcore_icon_delete",
-            handler: this.save.bind(this)
+            handler: this.delete.bind(this)
         },{
             text: t("save"),
             iconCls: "pimcore_icon_save_white",
@@ -303,6 +303,30 @@ feedbuilder.panelitem = Class.create({
                 window.location.reload();
             }
         }.bind(this));*/
+    },
+    delete: function() {
+        var allValues = this.form.getForm().getFieldValues();
+        allValues.id = this.data.id;
+        allValues.title = this.data.text;
+
+        Ext.Ajax.request({
+            url: "/admin/feedbuilder/delete",
+            method: "post",
+            params: allValues,
+            success: this.deleteOnComplete.bind(this)
+        });
+
+        var id = "pimcore_feed_panel_" + this.data.id;
+        this.parentPanel.getEditPanel().remove( Ext.getCmp(id));
+        
+        return {};
+    },
+    deleteOnComplete: function () {
+        this.parentPanel.tree.getStore().sync();
+        this.parentPanel.tree.getStore().load();
+        this.parentPanel.tree.getView().refresh();
+
+        pimcore.helpers.showNotification(t("delete"), t("feedbuilder_delete_successfully"), "delete");
     }
 
 });

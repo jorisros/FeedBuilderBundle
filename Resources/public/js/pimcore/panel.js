@@ -83,7 +83,6 @@ feedbuilder.panel = Class.create({
                 success: function (response) {
                     var data = Ext.decode(response.responseText);
 
-                    console.log(data);
                     this.tree.getStore().load({
                         node: this.tree.getRootNode()
                     });

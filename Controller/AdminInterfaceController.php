@@ -190,4 +190,25 @@ class AdminInterfaceController extends AdminController
         // ExportProviderService::getProviders('Provider');
         return $this->json(['success' => true, 'id'=>end(array_keys($arr['feeds']))]);
     }
+
+    /**
+     *
+     * @Route("/delete")
+     * @param Request $request
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function deleteAction(Request $request)
+    {
+        $current = FeedBuilderService::getConfig();
+        $arr = $current->toArray();
+
+        unset($arr['feeds'][$request->get('id')]);
+
+        $configFile = \Pimcore\Config::locateConfigFile(FeedBuilderService::LOCATION_FILE);
+
+        File::putPhpFile($configFile, to_php_data_file_format($arr));
+
+        return $this->json(['success' => true]);
+    }
 }
