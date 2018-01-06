@@ -86,7 +86,8 @@ class FeedBuilderService
         $listing = $class.'\Listing';
 
         $criteria = new $listing();
-        $criteria->setUnpublished(!$config->get('published'));
+        $published = $config->get('published') === 'true'? true: false;
+        $criteria->setUnpublished($published);
         $event->setListing($criteria);
 
         $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
