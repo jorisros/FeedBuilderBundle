@@ -104,22 +104,46 @@ class FeedController extends FrontendController
         }
 
     }
+    /**
+     * Converts the array to a recursive html
+     *
+     * @param $data
+     * @param $xml_data
+     * @param $objectDefinition
+     */
+    private function convertArrayHTML($data,$objectDefinition ){
+        $html = '<table border="1">';
+        foreach( $data as $key => $value ) {
+            if( is_numeric($key) ){
+               // $key = 'item'.$key; //dealing with <0/>..<n/> issues
+                $key = $objectDefinition->getClassName();
+            }
+            if( is_array($value) ) {
+                ///$subnode = $xml_data->addChild($key);
+                $sub = $this->convertArrayHTML($value,$objectDefinition);
+                $html .= '<tr><td>'.$key.'</td><td>'.$sub.'</td></tr>';
+            } else {
+                //$xml_data->addChild("$key",htmlspecialchars("$value"));
+                $html .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+            }
+        }
+        $html .= '</table>';
+        return $html;
+    }
 
     private function HtmlResponse($array, Config $config){
+
+        $class = $config->get('class');
+        $objectDefinition = new $class();
 
         $title = $config->get('title');
 
         $body = '<!doctype html><meta charset=utf-8><title>'.$title.'</title><body>';
         $body .= '<h1>'.$title.'</h1>';
-        foreach ($array as $row)
-        {
-            $body .= '<table border="1">';
-            foreach ($row as $key => $item) {
-                $body .= '<tr><td>' . $key . '</td><td>' . $item . '</td>';
-            }
-            $body .= '</table>';
-        }
-        $body .= '</table></body>';
+
+        $body .= $this->convertArrayHTML($array, $objectDefinition);
+
+        $body .= '</body>';
         $response = new Response($body);
 
         return $response;
