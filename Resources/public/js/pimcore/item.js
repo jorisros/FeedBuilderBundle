@@ -6,6 +6,33 @@ feedbuilder.panelitem = Class.create({
         this.data = data;
         this.addLayout();
     },
+    onRadioNodeChange: function(item){
+        Ext.getCmp('selectionFieldsetJoris'+this.data.id).hide();
+    },
+    onRadioNodeClick: function(item){
+        Ext.getCmp('feedbuilder_feed_overview-'+this.data.id).hide();
+
+        var activeRadio  = null;
+        for(var i =0; i<item.items.items.length; i++){
+
+            if(item.items.items[i].checked){
+                if(item.items.items[i].inputValue == 3){
+                    Ext.getCmp('feedbuilder_feed_overview-'+this.data.id).show();
+                }
+            }
+        }
+        //if(item.inputValue == 3){
+        //   Ext.getCmp('selectionFieldsetJoris'+this.data.id).show();
+        //}
+        return {};
+    },
+    radioEvent: function() {
+      return {
+          change : this.onRadioNodeClick.bind(this),
+         // change : this.onRadioNodeChange.bind(this),
+
+        }
+    },
     buildForm: function() {
         this.form = new Ext.form.FormPanel({
             border: false,
@@ -32,10 +59,12 @@ feedbuilder.panelitem = Class.create({
                         columns: 1,
                         vertical: true,
                         items: [
-                            { boxLabel: t('feedbuilder_form_type_object'), name: 'type', inputValue: '1' },
-                            { boxLabel: t('feedbuilder_form_type_export'), name: 'type', inputValue: '2'},
-                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: '3' }
+                            { boxLabel: t('feedbuilder_form_type_object'), name: 'type', inputValue: 1 },
+                            { boxLabel: t('feedbuilder_form_type_export'), name: 'type', inputValue: 2 },
+                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: 3 }
                         ],
+                        listeners: this.radioEvent()
+
                     },
                     {
                         xtype: "textfield",
@@ -44,6 +73,17 @@ feedbuilder.panelitem = Class.create({
                         fieldLabel: t("feedbuilder_form_root")
                     }
 
+                ]
+            },{
+                xtype: "fieldset",
+                id: "feedbuilder_feed_overview-"+this.data.id,
+                title: t("feedbuilder_feed_overview"),
+                collapsible: false,
+                defaults: {
+                    width: 400
+                },
+                items: [this.getUrl()
+                    //this.getUrl()
                 ]
             },
                 {
@@ -72,11 +112,12 @@ feedbuilder.panelitem = Class.create({
         return this.form;
     },
     getUrl: function() {
+        var url = '/feedbuilder/'+this.data.text;
         return new Ext.Panel({
             value: 'jorisje',
             border: false,
             disabled: false,
-            html: '<br><br>Url<br><a href="">some text here</a>'
+            html: '<b>Urls</b><br>JSON: <a href="'+url+'.json" target="_blank">'+url+'.json</a><br>XML: <a href="'+url+'.xml" target="_blank">'+url+'.xml</a><br>HTML: <a href="'+url+'.html" target="_blank">'+url+'.html</a>'
 
         });
 
@@ -236,6 +277,8 @@ feedbuilder.panelitem = Class.create({
 
         this.parentPanel.getEditPanel().add(this.panel);
         this.parentPanel.getEditPanel().setActiveTab(this.panel);
+
+        Ext.getCmp('feedbuilder_feed_overview-'+this.data.id).hide();
 
         pimcore.layout.refresh();
     },
