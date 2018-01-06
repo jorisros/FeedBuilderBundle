@@ -67,22 +67,42 @@ class FeedController extends FrontendController
 
     private function XMLResponse($array, $config){
 
-        $xml = new \SimpleXMLElement('<'.$config->get('root').'/>');
         $class = $config->get('class');
+        $objectDefinition = new $class();
 
-        foreach ($array[$config->get('root')] as $item) {
-            $objectDefinition = new $class();
-            $object = $xml->addChild($objectDefinition->getClassName());
-            foreach ($item as $key => $value) {
-                $child = $object->addChild($key, $value);
+        $xml = new \SimpleXMLElement('<'.$config->get('root').'/>');
 
-            }
-        }
-
+        $this->convertArrayXML($array[$config->get('root')],$xml, $objectDefinition);
+        
         $body = $xml->asXML();
+
         $response = new Response($body);
         $response->headers->set('Content-Type', 'xml');
         return $response;
+    }
+
+    /**
+     * Converts the array to a recursive xml
+     * 
+     * @param $data
+     * @param $xml_data
+     * @param $objectDefinition
+     */
+    private function convertArrayXML($data, &$xml_data,$objectDefinition ){
+
+        foreach( $data as $key => $value ) {
+            if( is_numeric($key) ){
+               // $key = 'item'.$key; //dealing with <0/>..<n/> issues
+                $key = $objectDefinition->getClassName();
+            }
+            if( is_array($value) ) {
+                $subnode = $xml_data->addChild($key);
+                $this->convertArrayXML($value, $subnode,$objectDefinition);
+            } else {
+                $xml_data->addChild("$key",htmlspecialchars("$value"));
+            }
+        }
+
     }
 
     private function HtmlResponse($array, Config $config){
