@@ -106,7 +106,31 @@ class FeedBuilderService
 
                 $arrProperties = [];
                 foreach ($specificationOutputChannel as $property) {
-                    $arrProperties[$property->getLabeledValue($object)->label] = $property->getLabeledValue($object)->value;
+
+                    switch ($property->getLabeledValue($object)->def->fieldtype)
+                    {
+                        case 'href':
+                            $name = $property->getLabeledValue($object)->def->name;
+
+                            $hrefObject = $object->$name;
+                            $arrData = [];
+
+                            if($hrefObject) {
+                                $outputChannelHref = Service::getOutputDataConfig($hrefObject, $config->get('channel'));
+
+                                foreach ($outputChannelHref as $hrefProperty) {
+                                    $arrData[$hrefProperty->getLabeledValue($hrefObject)->label] = $hrefProperty->getLabeledValue($hrefObject)->value;
+                                }
+                            }
+
+                            $arrProperties[$property->getLabeledValue($object)->label] = $arrData;
+                            break;
+                        default:
+                            $value = $property->getLabeledValue($object)->value;
+                            $arrProperties[$property->getLabeledValue($object)->label] = $value;
+                        break;
+                    }
+
                 }
 
                 $event->setArray($arrProperties);
