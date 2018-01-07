@@ -152,8 +152,9 @@ class AdminInterfaceController extends AdminController
 
         File::putPhpFile($configFile, to_php_data_file_format($arr));
 
+        //Clear the cache so the output is been cleared
+        \Pimcore\Cache::clearTags(["output"]);
 
-       // ExportProviderService::getProviders('Provider');
         return $this->json(['success' => true]);
     }
 
@@ -185,7 +186,6 @@ class AdminInterfaceController extends AdminController
         $configFile = \Pimcore\Config::locateConfigFile(FeedBuilderService::LOCATION_FILE);
 
         File::putPhpFile($configFile, to_php_data_file_format($arr));
-
 
         // ExportProviderService::getProviders('Provider');
         return $this->json(['success' => true, 'id'=>end(array_keys($arr['feeds']))]);
