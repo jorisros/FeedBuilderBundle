@@ -91,6 +91,10 @@ class FeedBuilderService
             $criteria = new $listing();
             $published = $config->get('published') === 'true' ? true : false;
             $criteria->setUnpublished($published);
+
+            if(strlen($config->get('path')) > 0 && $config->get('path') != "/") {
+                $criteria->setCondition("o_path LIKE ?", [$config->get('path')."%"]);
+            }
             $event->setListing($criteria);
 
             $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();

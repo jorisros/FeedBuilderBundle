@@ -156,6 +156,11 @@ feedbuilder.panelitem = Class.create({
         );
     },
     getPathField: function() {
+
+        if(!this.data.configuration.path){
+            this.data.configuration.path = '/';
+        }
+
         var href = {
             name: 'path',
             fieldLabel: t("feedbuilder_form_path"),
@@ -318,7 +323,7 @@ feedbuilder.panelitem = Class.create({
 
         var id = "pimcore_feed_panel_" + this.data.id;
         this.parentPanel.getEditPanel().remove( Ext.getCmp(id));
-        
+
         return {};
     },
     deleteOnComplete: function () {
