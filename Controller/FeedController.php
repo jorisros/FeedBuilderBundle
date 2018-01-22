@@ -12,6 +12,7 @@ namespace FeedBuilderBundle\Controller;
 use FeedBuilderBundle\Service\FeedBuilderService;
 use Pimcore\Config\Config;
 use Pimcore\Controller\FrontendController;
+use Pimcore\Model\DataObject\Product;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +53,7 @@ class FeedController extends FrontendController
         //@TODO Add check for ipaddress
         switch($request->get('_format')){
             case 'xml':
-                return $this->XMLResponse($result, $config);
+                return $this->XMLResponse($result, $config,$feedbuilder);
                 break;
             case 'json':
                 return new JsonResponse($result);
@@ -65,14 +66,14 @@ class FeedController extends FrontendController
         throw new NotFoundHttpException('Sorry feed not found.');
     }
 
-    private function XMLResponse($array, $config){
+    private function XMLResponse($array, $config, FeedBuilderService $feedbuilder){
 
         $class = $config->get('class');
         $objectDefinition = new $class();
 
         $xml = new \SimpleXMLElement('<'.$config->get('root').'/>');
 
-        $this->convertArrayXML($array[$config->get('root')],$xml, $objectDefinition);
+        $this->convertArrayXML($array[$config->get('root')],$xml, $objectDefinition,$feedbuilder);
         
         $body = $xml->asXML();
 
@@ -88,7 +89,7 @@ class FeedController extends FrontendController
      * @param $xml_data
      * @param $objectDefinition
      */
-    private function convertArrayXML($data, &$xml_data,$objectDefinition ){
+    private function convertArrayXML($data, &$xml_data,$objectDefinition, FeedBuilderService $feedbuilder ){
 
         foreach( $data as $key => $value ) {
             if( is_numeric($key) ){
@@ -96,10 +97,21 @@ class FeedController extends FrontendController
                 $key = $objectDefinition->getClassName();
             }
             if( is_array($value) ) {
-                $subnode = $xml_data->addChild($key);
-                $this->convertArrayXML($value, $subnode,$objectDefinition);
+                if($feedbuilder->hasAttribute($key)){
+                    $arr = $feedbuilder->getAttribute($key);
+                    $subnode = $xml_data->addChild($arr['label']);
+                    $subnode->addAttribute('code',$arr['code']);
+                    $this->convertArrayXML($value, $subnode, $objectDefinition, $feedbuilder);
+                }else {
+                    $subnode = $xml_data->addChild($key);
+                    $this->convertArrayXML($value, $subnode, $objectDefinition, $feedbuilder);
+                }
             } else {
-                $xml_data->addChild("$key",htmlspecialchars("$value"));
+                //var_dump($key);
+                /** @var Product $objectDefinition */
+
+                $rating = $xml_data->addChild("$key",htmlspecialchars("$value"));
+
             }
         }
 
