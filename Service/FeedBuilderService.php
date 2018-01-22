@@ -18,6 +18,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class FeedBuilderService
 {
     private $dispatcher = null;
+
+    private $key_attributes = [];
+
     public function __construct(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
@@ -113,6 +116,16 @@ class FeedBuilderService
 
                     switch ($property->getLabeledValue($object)->def->fieldtype)
                     {
+                        case 'localizedfields':
+                            $property->setChannel($config->get('channel'));
+                            $values = $property->getLabeledValue($object)->value;
+
+                            foreach ($values as $key=>$value)
+                            {
+                                $this->setAttribute($key, ['label'=>'language','code'=>$key]);
+                            }
+                            $arrProperties[$property->getLabeledValue($object)->label] = $values;
+                            break;
                         case 'href':
                             $name = $property->getLabeledValue($object)->def->name;
 
@@ -148,7 +161,35 @@ class FeedBuilderService
             Cache::save($result, 'feedbuilder-' . $config->get('title'), ['output'], 3600);
         }
 
-
         return $result;
     }
+
+    public function hasAttribute($key) {
+        $exceptions = $this->getAttributes();
+
+        return array_key_exists($key, $exceptions);
+    }
+
+    public function getAttribute($key) {
+        if($this->hasAttribute($key)){
+            return $this->key_attributes[$key];
+        }
+
+        return $key;
+    }
+
+    public function getAttributes() {
+        return $this->key_attributes;
+    }
+
+    private function setAttribute($key, $value) {
+        if($this->hasAttribute($key))
+        {
+            $this->key_attributes[$key] = array_merge($this->getAttribute($key),$value);
+        }else {
+            $this->key_attributes[$key] = $value;
+        }
+    }
+
+
 }
