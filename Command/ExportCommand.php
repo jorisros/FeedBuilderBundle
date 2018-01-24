@@ -22,10 +22,10 @@ class ExportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $argument = $input->getArgument('feed_id');
+        $profileId = $input->getArgument('feed_id');
 
         //@TODO Fix the name of the profile to make it dynamic from cli
-        $profile = FeedBuilderService::getConfigOfProfile(1);
+        $profile = FeedBuilderService::getConfigOfProfile($profileId);
 
         $feedbuilder = new FeedBuilderService($this->getContainer()->get('event_dispatcher'));
         $feedbuilder->run($profile);
