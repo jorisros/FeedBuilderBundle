@@ -58,11 +58,7 @@ feedbuilder.panelitem = Class.create({
                         // Arrange radio buttons into two columns, distributed vertically
                         columns: 1,
                         vertical: true,
-                        items: [
-                            { boxLabel: t('feedbuilder_form_type_object'), name: 'type', inputValue: 1 },
-                            { boxLabel: t('feedbuilder_form_type_export'), name: 'type', inputValue: 2 },
-                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: 3, checked: true}
-                        ],
+                        items: this.data.configuration.type,
                         listeners: this.radioEvent()
 
                     },
