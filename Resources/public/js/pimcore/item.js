@@ -29,7 +29,7 @@ feedbuilder.panelitem = Class.create({
     radioEvent: function() {
       return {
           change : this.onRadioNodeClick.bind(this),
-         // change : this.onRadioNodeChange.bind(this),
+          afterlayout : this.onRadioNodeClick.bind(this)
 
         }
     },
@@ -61,7 +61,7 @@ feedbuilder.panelitem = Class.create({
                         items: [
                             { boxLabel: t('feedbuilder_form_type_object'), name: 'type', inputValue: 1 },
                             { boxLabel: t('feedbuilder_form_type_export'), name: 'type', inputValue: 2 },
-                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: 3 }
+                            { boxLabel: t('feedbuilder_form_type_feed'), name: 'type', inputValue: 3, checked: true}
                         ],
                         listeners: this.radioEvent()
 
