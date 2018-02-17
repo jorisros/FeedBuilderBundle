@@ -154,7 +154,15 @@ class FeedBuilderService
             $result[] = $arr;
         }
 
-        return $result;
+        if($config->get('root'))
+        {
+            $r[$config->get('root')] = $result;
+            return $r;
+        }else{
+            return $result;
+        }
+
+
     }
 
     /**
