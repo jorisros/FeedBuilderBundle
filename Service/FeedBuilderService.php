@@ -12,6 +12,8 @@ use FeedBuilderBundle\Event\FeedBuilderEvent;
 use OutputDataConfigToolkitBundle\Service;
 use Pimcore\Cache;
 use Pimcore\Config;
+use Pimcore\Model\AbstractModel;
+use Pimcore\Model\DataObject\Classificationstore;
 use Pimcore\Model\DataObject\Concrete;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -92,73 +94,98 @@ class FeedBuilderService
             $listing = $class . '\Listing';
 
             $criteria = new $listing();
-            $published = $config->get('published') === 'true' ? true : false;
-            $criteria->setUnpublished($published);
 
-            if(strlen($config->get('path')) > 0 && $config->get('path') != "/") {
-                $criteria->setCondition("o_path LIKE ?", [$config->get('path')."%"]);
+            switch ($class){
+                default:
+                    $result = $this->objectFlow($criteria, $config, $event);
             }
-            $event->setListing($criteria);
 
-            $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
-            $objects = $criteria->load();
-
-            $result = [];
-            /** @var Concrete $object */
-            foreach ($objects as $object) {
-                $event->setObject($object);
-                $object = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
-
-                $specificationOutputChannel = Service::getOutputDataConfig($object, $config->get('channel'));
-
-                $arrProperties = [];
-                foreach ($specificationOutputChannel as $property) {
-
-                    switch ($property->getLabeledValue($object)->def->fieldtype)
-                    {
-                        case 'localizedfields':
-                            $property->setChannel($config->get('channel'));
-                            $values = $property->getLabeledValue($object)->value;
-
-                            foreach ($values as $key=>$value)
-                            {
-                                $this->setAttribute($key, ['label'=>'language','code'=>$key]);
-                            }
-                            $arrProperties[$property->getLabeledValue($object)->label] = $values;
-                            break;
-                        case 'href':
-                            $name = $property->getLabeledValue($object)->def->name;
-
-                            $hrefObject = $object->$name;
-                            $arrData = [];
-
-                            if($hrefObject) {
-                                $outputChannelHref = Service::getOutputDataConfig($hrefObject, $config->get('channel'));
-
-                                foreach ($outputChannelHref as $hrefProperty) {
-                                    $arrData[$hrefProperty->getLabeledValue($hrefObject)->label] = $hrefProperty->getLabeledValue($hrefObject)->value;
-                                }
-                            }
-
-                            $arrProperties[$property->getLabeledValue($object)->label] = $arrData;
-                            break;
-                        default:
-                            $value = $property->getLabeledValue($object)->value;
-                            $arrProperties[$property->getLabeledValue($object)->label] = $value;
-                        break;
-                    }
-
-                }
-
-                $event->setArray($arrProperties);
-                $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
-                $result[$config->get('root')][] = $arr;
-            }
             $event->setResult($result);
 
             $result = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_RUN, $event)->getResult();
 
             Cache::save($result, 'feedbuilder-' . $config->get('title'), ['output'], 3600);
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param AbstractModel $criteria
+     * @param FeedBuilderEvent $event
+     * @return array
+     * @throws \Exception
+     */
+    private function objectFlow(AbstractModel $criteria, Config\Config $config, FeedBuilderEvent $event) {
+        $published = $config->get('published') === 'true' ? true : false;
+        $criteria->setUnpublished($published);
+
+        if(strlen($config->get('path')) > 0 && $config->get('path') != "/") {
+            $criteria->setCondition("o_path LIKE ?", [$config->get('path')."%"]);
+        }
+        $event->setListing($criteria);
+
+        $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
+        $objects = $criteria->load();
+
+        $result = [];
+        /** @var Concrete $object */
+        foreach ($objects as $object) {
+            $event->setObject($object);
+            $object = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_ROW, $event)->getObject();
+
+            $specificationOutputChannel = Service::getOutputDataConfig($object, $config->get('channel'));
+
+            $arrProperties = [];
+            foreach ($specificationOutputChannel as $property) {
+
+                switch ($property->getLabeledValue($object)->def->fieldtype)
+                {
+                    case 'classificationstore':
+                        /** @var Classificationstore $value */
+                        $value = $property->getLabeledValue($object)->value;
+                        // var_dump($value-);
+                        //var_dump($value->getItems());
+                        $arrProperties[$property->getLabeledValue($object)->label] = $value;
+                        break;
+                    case 'localizedfields':
+                        $property->setChannel($config->get('channel'));
+                        $values = $property->getLabeledValue($object)->value;
+
+                        foreach ($values as $key=>$value)
+                        {
+                            $this->setAttribute($key, ['label'=>'language','code'=>$key]);
+                        }
+                        $arrProperties[$property->getLabeledValue($object)->label] = $values;
+                        break;
+                    case 'href':
+                        $name = $property->getLabeledValue($object)->def->name;
+
+                        $hrefObject = $object->$name;
+                        $arrData = [];
+
+                        if($hrefObject) {
+                            $outputChannelHref = Service::getOutputDataConfig($hrefObject, $config->get('channel'));
+
+                            foreach ($outputChannelHref as $hrefProperty) {
+                                $arrData[$hrefProperty->getLabeledValue($hrefObject)->label] = $hrefProperty->getLabeledValue($hrefObject)->value;
+                            }
+                        }
+
+                        $arrProperties[$property->getLabeledValue($object)->label] = $arrData;
+                        break;
+                    default:
+                        $value = $property->getLabeledValue($object)->value;
+                        $arrProperties[$property->getLabeledValue($object)->label] = $value;
+                        break;
+                }
+
+            }
+
+            $event->setArray($arrProperties);
+            $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
+            $result[$config->get('root')][] = $arr;
         }
 
         return $result;
