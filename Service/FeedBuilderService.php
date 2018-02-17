@@ -96,6 +96,9 @@ class FeedBuilderService
             $criteria = new $listing();
 
             switch ($class){
+                case 'Pimcore\Model\DataObject\Classificationstore\KeyConfig':
+                    $result = $this->keyConfigFlow($criteria, $config, $event);
+                    break;
                 default:
                     $result = $this->objectFlow($criteria, $config, $event);
             }
@@ -112,6 +115,51 @@ class FeedBuilderService
     }
 
     /**
+     * Flow for attributes of classification store
+     *
+     * @param AbstractModel $criteria
+     * @param Config\Config $config
+     * @param FeedBuilderEvent $event
+     * @return array
+     */
+    private function keyConfigFlow(AbstractModel $criteria, Config\Config $config, FeedBuilderEvent $event) {
+        $objects = $criteria->load();
+
+        $event->setListing($criteria);
+
+        $criteria = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_SELECTION, $event)->getListing();
+        $objects = $criteria->load();
+
+        $result = [];
+        /** @var Concrete $object */
+        foreach ($objects as $object) {
+            $arrProperties = [];
+            foreach (get_object_vars($object) as $key=>$value){
+                switch ($key){
+                    case 'creationDate':
+                    case 'modificationDate':
+                        $arrProperties[$key] = date('Y-m-d\TH:i:sO', $value);
+                        break;
+                    case 'definition':
+                        $arrProperties[$key] = json_decode($value);
+                        break;
+                    default:
+                        $arrProperties[$key] = $value;
+                        break;
+                }
+            }
+            $event->setArray($arrProperties);
+            $arr = $this->dispatcher->dispatch(FeedBuilderEvent::AFTER_ROW, $event)->getArray();
+
+            $result[] = $arr;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Flow for objects
+     *
      * @param AbstractModel $criteria
      * @param FeedBuilderEvent $event
      * @return array
