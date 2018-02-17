@@ -40,7 +40,7 @@ class FeedBuilderEvent extends Event
     public function getConfig() {
         return $this->config;
     }
-    public function setListing(Concrete $listing) {
+    public function setListing( $listing) {
         $this->listing = $listing;
     }
     public function getListing() {
