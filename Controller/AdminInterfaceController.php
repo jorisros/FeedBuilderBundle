@@ -81,7 +81,21 @@ class AdminInterfaceController extends AdminController
             $data[] = $s;
         }
 
+        $data[] = $this->getClassificationStore();
+
         return $this->json($data);
+    }
+
+    /**
+     * Returns the classification store keys
+     *
+     * @return array
+     */
+    private function getClassificationStore() {
+        return [
+            'id'=>'Pimcore\Model\DataObject\Classificationstore\KeyConfig',
+            'text' => 'Classification Store Keys'
+        ];
     }
     /**
      *
