@@ -14,22 +14,21 @@ feedbuilder.panelitem = Class.create({
 
         var activeRadio  = null;
         for(var i =0; i<item.items.items.length; i++){
-
             if(item.items.items[i].checked){
+
                 if(item.items.items[i].inputValue == 3){
                     Ext.getCmp('feedbuilder_feed_overview-'+this.data.id).show();
                 }
             }
         }
-        //if(item.inputValue == 3){
-        //   Ext.getCmp('selectionFieldsetJoris'+this.data.id).show();
-        //}
+
         return {};
     },
     radioEvent: function() {
       return {
           change : this.onRadioNodeClick.bind(this),
-          afterlayout : this.onRadioNodeClick.bind(this)
+         // afterrender : this.onRadioNodeClick.bind(this)
+          //afterlayout : this.onRadioNodeClick.bind(this)
 
         }
     },
@@ -55,6 +54,7 @@ feedbuilder.panelitem = Class.create({
                     {
                         xtype: 'radiogroup',
                         fieldLabel: t('feedbuilder_form_type'),
+                        id: "feedbuilder_feed_radiogroup-"+this.data.id,
                         // Arrange radio buttons into two columns, distributed vertically
                         columns: 1,
                         vertical: true,
