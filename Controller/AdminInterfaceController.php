@@ -117,9 +117,35 @@ class AdminInterfaceController extends AdminController
             'configuration'=>$this->getConfiguration($feed)
         ];
 
+        $data['configuration']['type'] = $this->buildType($this->getConfiguration($feed));
+
         return $this->json($data);
     }
 
+    private function buildType($config) {
+
+        $type = $config['type'];
+        return [
+            $this->generateType($this->get("translator")->trans('feedbuilder_form_type_object'), 'type', 1, ($type == 1 ? true : false)),
+            $this->generateType($this->get("translator")->trans('feedbuilder_form_type_export'), 'type', 2, ($type == 2 ? true : false)),
+            $this->generateType($this->get("translator")->trans('feedbuilder_form_type_feed'), 'type', 3, ($type == 3 ? true : false)),
+        ];
+    }
+
+    private function generateType($boxLabel, $name, $inputValue, $active = false) {
+
+        $arr = [];
+
+        $arr['boxLabel'] = $boxLabel;
+        $arr['name'] = $name;
+        $arr['inputValue'] = $inputValue;
+
+        if($active){
+            $arr['checked'] = true;
+        }
+
+        return $arr;
+    }
     /**
      * @Route("/channel")
      * @param Request $request
