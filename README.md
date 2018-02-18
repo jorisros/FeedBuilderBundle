@@ -1,3 +1,4 @@
+
 # FeedBuilderBundle
 Feedbuilder bundle is export bundle that helps to export data of pimcore to other systems.
 
@@ -5,6 +6,7 @@ Feedbuilder bundle is export bundle that helps to export data of pimcore to othe
 The working is quite simple, you discibe your export method to the level you want, that's give you data you want. This is based on the output channel bundle
 
 ## Events
+Inside the builder we can subscribe to events on different levels of the building of the feeds. 
 
 | Event                       | Description  |
 | --------------------------- | ------------ |
@@ -12,7 +14,7 @@ The working is quite simple, you discibe your export method to the level you wan
 | feedbuilder.after.selection |              |
 | feedbuilder.before.row      |              |
 | feedbuilder.after.row       |              |
-| feedbuilder.after.run       |              |
+| feedbuilder.after.run       | Latest step of building the feed, this is triggered after looping through the objects. The input of the event is de result in a array.             |
 
 ## Example of a export to JSON
 Create a class and a method where the writer is been located.
