@@ -2,6 +2,12 @@
 # FeedBuilderBundle
 Feedbuilder bundle is export bundle that helps to export data of pimcore to other systems.
 
+## Installation
+The installation can be installed though composer. 
+1. Run ``composer require jorisros/feed-builder-bundle`` to receive the bundle
+2. Enable the bundle ``bin/console pimcore:bundle:enable FeedBuilderBundle``
+3. Then reload the GUI of Pimcore, and there is a new menu item on the following location: Settings->Settings feedbuilder, this interface saves the in a configuration file on the following location ``var/config/feedbuilder.php`` 
+
 ## How does it works?
 The working is quite simple, you discibe your export method to the level you want, that's give you data you want. This is based on the output channel bundle
 
