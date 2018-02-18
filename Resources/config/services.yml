@@ -17,6 +17,10 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    FeedBuilderBundle\EventListener\ControllerListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController}
+
     FeedBuilderBundle\EventListener\ObjectListener:
         tags:
             - { name: kernel.event_listener, event: pimcore.dataobject.postAdd, method: doExport }

@@ -15,7 +15,7 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
     pimcoreReady: function (params, broker) {
         var user = pimcore.globalmanager.get('user');
 
-        if (user.isAllowed('plugins')) {
+        if (user.isAllowed('bundle_feedbuilder')) {
 
             var importMenu = new Ext.Action({
                 text: t('feedbuilder_text'),
