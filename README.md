@@ -22,6 +22,7 @@ We can easily extend the feedbuilder to fit your own situation. The following ev
 | feedbuilder.after.row       |              |
 | feedbuilder.after.run       | Latest step of building the feed, this is triggered after looping through the objects. The input of the event is de result in a array.             |
 
+![alt text](https://raw.githubusercontent.com/jorisros/FeedBuilderBundle/master/Docs/img/flow.png)
 
 
 ## Example of a export to JSON
