@@ -12,7 +12,7 @@ The installation can be installed though composer.
 The working is quite simple, you discibe your export method to the level you want, that's give you data you want. This is based on the output channel bundle
 
 ## Events
-Inside the builder we can subscribe to events on different levels of the building of the feeds. 
+We can easily extend the feedbuilder to fit your own situation. The following event handlers are inside the builder to you can subscribe to events on different levels of the building of the feeds. 
 
 | Event                       | Description  |
 | --------------------------- | ------------ |
@@ -21,6 +21,8 @@ Inside the builder we can subscribe to events on different levels of the buildin
 | feedbuilder.before.row      |              |
 | feedbuilder.after.row       |              |
 | feedbuilder.after.run       | Latest step of building the feed, this is triggered after looping through the objects. The input of the event is de result in a array.             |
+
+
 
 ## Example of a export to JSON
 Create a class and a method where the writer is been located.
