@@ -16,7 +16,7 @@ We can easily extend the feedbuilder to fit your own situation. The following ev
 
 | Event                       | Description  |
 | --------------------------- | ------------ |
-| feedbuilder.before.run      |              |
+| feedbuilder.before.run      | This event is triggered as first event, the input of this event is the configuration of the feeed.             |
 | feedbuilder.after.selection | The event after the selection has been runned, this input for this event is the object listener. This is desgined for customize the query             |
 | feedbuilder.before.row      | This is the event before the object is converted to array, the input of this event is a object             |
 | feedbuilder.after.row       | The event after the object is converted from a object to a array. The input of this event is a array             |
