@@ -17,9 +17,9 @@ We can easily extend the feedbuilder to fit your own situation. The following ev
 | Event                       | Description  |
 | --------------------------- | ------------ |
 | feedbuilder.before.run      |              |
-| feedbuilder.after.selection |              |
-| feedbuilder.before.row      |              |
-| feedbuilder.after.row       |              |
+| feedbuilder.after.selection | The event after the selection has been runned, this input for this event is the object listener. This is desgined for customize the query             |
+| feedbuilder.before.row      | This is the event before the object is converted to array, the input of this event is a object             |
+| feedbuilder.after.row       | The event after the object is converted from a object to a array. The input of this event is a array             |
 | feedbuilder.after.run       | Latest step of building the feed, this is triggered after looping through the objects. The input of the event is de result in a array.             |
 
 ![alt text](https://raw.githubusercontent.com/jorisros/FeedBuilderBundle/master/Docs/img/flow.png)
