@@ -48,7 +48,7 @@ class FeedController extends FrontendController
         }
 
         $feedbuilder = new FeedBuilderService($this->get('event_dispatcher'));
-        $result = $feedbuilder->run($config);
+        $result = $feedbuilder->run($config, $request->get('ignoreCache', false));
 
         //@TODO Add check for ipaddress
         switch($request->get('_format')){
