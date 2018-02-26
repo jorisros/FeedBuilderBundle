@@ -81,13 +81,18 @@ class FeedBuilderService
      *
      * @param Config\Config $config
      */
-    public function run(Config\Config $config) {
+    public function run(Config\Config $config, $ignoreCache = false) {
 
         $event = new FeedBuilderEvent();
         $event->setConfig($config);
 
         $config = $this->dispatcher->dispatch(FeedBuilderEvent::BEFORE_RUN, $event)->getConfig();
 
+        if($ignoreCache)
+        {
+            Cache::clearTag('output');
+        }
+        
         if(!$result = Cache::load('feedbuilder-'.$config->get('title'))) {
 
             $class = $config->get('class');

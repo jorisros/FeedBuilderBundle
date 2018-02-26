@@ -24,6 +24,9 @@ We can easily extend the feedbuilder to fit your own situation. The following ev
 
 ![Flow of the builder](https://raw.githubusercontent.com/jorisros/FeedBuilderBundle/master/Docs/img/flow.png)
 
+## Ignore cache in your feed
+It is possible to ignore the cache in your feed while developing or testing. You can give the ``run`` method in the composer a second boolean parameter, so it clears the cache before it runs the query code.
+In the browser you can add the following get parameter to the feed: ``...name-of-json.json?ignoreCache=true`` then the cache will be cleared before you run the feedbuilder.
 
 ## Example of a export to JSON
 Create a class and a method where the writer is been located.
