@@ -220,6 +220,23 @@ class FeedBuilderService
                         }
                         $arrProperties[$property->getLabeledValue($object)->label] = $values;
                         break;
+                    case 'objectBridge':
+                        $name = $property->getLabeledValue($object)->def->name;
+
+                        $hrefObject = reset($object->$name);
+
+                        $arrData = [];
+
+                        if($hrefObject){
+                            $outputChannelHref = Service::getOutputDataConfig($hrefObject, $config->get('channel'));
+                            foreach ($outputChannelHref as $hrefProperty) {
+                                $arrData[$hrefProperty->getLabeledValue($hrefObject)->label] = $hrefProperty->getLabeledValue($hrefObject)->value;
+
+                            }
+
+                            $arrProperties[$property->getLabeledValue($object)->label] = $arrData;
+                        }
+                        break;    
                     case 'href':
                         $name = $property->getLabeledValue($object)->def->name;
 
