@@ -21,7 +21,7 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
                 text: t('feedbuilder_text'),
                 icon: '/bundles/feedbuilder/img/svg/multiple_outputs.svg',
 
-                handler: this.getPanel()
+                handler: this.getPanel
             });
 
             layoutToolbar.settingsMenu.add(importMenu);
