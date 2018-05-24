@@ -18,9 +18,9 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
         if (user.isAllowed('bundle_feedbuilder')) {
 
             var importMenu = new Ext.Action({
+                id: "feedbuilder_settings",
                 text: t('feedbuilder_text'),
                 icon: '/bundles/feedbuilder/img/svg/multiple_outputs.svg',
-
                 handler: this.getPanel()
             });
 
@@ -33,7 +33,9 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
         //var editor = new pimcore.report.custom.panel();
 
         var editor = new feedbuilder.panel();
-        if (!this.panel) {
+
+        if (!this.panel || (this.panel && this.panel.destroyed)) {
+
             this.panel = new Ext.Panel({
                 id: "feedbuilder_editor",
                 title: t("feedbuilder_title"),
@@ -42,10 +44,6 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
                 closable:true,
                 items: [editor.getTabPanel()]
             });
-
-            var tabPanel = Ext.getCmp("pimcore_panel_tabs");
-            tabPanel.add(this.panel);
-            tabPanel.setActiveItem("feedbuilder_editor");
 
             this.panel.on("destroy", function () {
                 pimcore.globalmanager.remove("feedbuilder_editor");
@@ -56,16 +54,12 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
 
         return this.panel;
     },
-
-
-
-
-
-
+    
     open: function() {
         this.getTab();
 
     },
+    
     getGrid: function() {
 
         var store = Ext.create('Ext.data.Store', {
@@ -102,6 +96,7 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
 
         return this.panel;
     },
+    
     getTab: function() {
         this.tabPanel = Ext.getCmp("pimcore_panel_tabs");
 
@@ -137,11 +132,11 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
 
 
         this.tabPanel.add(this.tab);
-        console.log(this.tabPanel);
 
         // recalculate the layout
         pimcore.layout.refresh();
     },
+    
     getTree: function(){
         if (!this.tree) {
             var store = Ext.create('Ext.data.TreeStore', {
@@ -197,3 +192,23 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
 });
 
 var FeedBuilderBundlePlugin = new pimcore.plugin.FeedBuilderBundle();
+
+$( document ).ready(function() {
+    $(document).on('click', "#feedbuilder_settings-itemEl", function () {
+
+        var tabPanel = Ext.getCmp("pimcore_panel_tabs");
+
+        if($("#feedbuilder_editor").length === 0){
+            var tabPanel = Ext.getCmp("pimcore_panel_tabs");
+            var panel = FeedBuilderBundlePlugin.getPanel();
+            tabPanel.add(panel);
+            tabPanel.setActiveItem("feedbuilder_editor");
+
+        }else{
+            tabPanel.setActiveItem("feedbuilder_editor");
+        }
+
+        tabPanel.updateLayout();
+
+    });
+});
