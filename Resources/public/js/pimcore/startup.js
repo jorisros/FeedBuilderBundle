@@ -29,11 +29,9 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
     },
 
     getPanel: function () {
-
-        //var editor = new pimcore.report.custom.panel();
-
+        
         var editor = new feedbuilder.panel();
-        if (!this.panel) {
+        if (!this.panel || (this.panel && this.panel.destroyed)) {
             this.panel = new Ext.Panel({
                 id: "feedbuilder_editor",
                 title: t("feedbuilder_title"),
@@ -47,25 +45,19 @@ pimcore.plugin.FeedBuilderBundle = Class.create(pimcore.plugin.admin, {
             tabPanel.add(this.panel);
             tabPanel.setActiveItem("feedbuilder_editor");
 
-            this.panel.on("destroy", function () {
-                pimcore.globalmanager.remove("feedbuilder_editor");
-            }.bind(this));
-
             pimcore.layout.refresh();
+        }else {
+            var tabPanel = Ext.getCmp("pimcore_panel_tabs");
+            tabPanel.setActiveItem("feedbuilder_editor");
         }
 
         return this.panel;
     },
 
-
-
-
-
-
     open: function() {
         this.getTab();
-
     },
+
     getGrid: function() {
 
         var store = Ext.create('Ext.data.Store', {
