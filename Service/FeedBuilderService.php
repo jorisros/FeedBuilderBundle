@@ -240,7 +240,8 @@ class FeedBuilderService
                     case 'href':
                         $name = $property->getLabeledValue($object)->def->name;
 
-                        $hrefObject = $object->$name;
+                        $method = 'get'.ucfirst($name);
+                        $hrefObject = $object->$method();
                         $arrData = [];
 
                         if($hrefObject) {
