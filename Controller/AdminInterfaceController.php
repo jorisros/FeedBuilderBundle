@@ -55,7 +55,8 @@ class AdminInterfaceController extends AdminController
             'published'=>$feed->get('published'),
             'class'=>$feed->get('class'),
             'root'=>$feed->get('root'),
-            'type'=>$feed->get('type')
+            'type'=>$feed->get('type'),
+            'service'=>$feed->get('service'),
         ];
     }
 
@@ -180,7 +181,8 @@ class AdminInterfaceController extends AdminController
             'published'=>$request->get('published'),
             'class'=>$request->get('class'),
             'root'=>$request->get('root'),
-            'type'=>$request->get('type')
+            'type'=>$request->get('type'),
+            'service'=>$request->get('service'),
         ];
 
         /** @var Config $current */
@@ -215,7 +217,8 @@ class AdminInterfaceController extends AdminController
             'published'=>$request->get('published'),
             'class'=>$request->get('class'),
             'root'=>$request->get('root'),
-            'type'=>$request->get('type')
+            'type'=>$request->get('type'),
+            'service'=>$request->get('service'),
         ];
 
         /** @var Config $current */

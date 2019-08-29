@@ -47,7 +47,8 @@ class FeedController extends FrontendController
             throw new NotFoundHttpException('Feed not found.');
         }
 
-        $feedbuilder = new FeedBuilderService($this->get('event_dispatcher'));
+        $containerId = $config->get('service');
+        $feedbuilder = $this->container->get($containerId);
         $result = $feedbuilder->run($config, $request->get('ignoreCache', false));
 
         //@TODO Add check for ipaddress

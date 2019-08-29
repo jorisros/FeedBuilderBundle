@@ -19,21 +19,25 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class FeedBuilderService
 {
-    private $dispatcher = null;
-
-    private $key_attributes = [];
-
-    public function __construct(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-    }
-
     const LOCATION_FILE = 'feedbuilder.php';
 
     const TYPE_OBJECT = 1;
     const TYPE_EXPORT = 2;
     const TYPE_FEED = 3;
 
+    private $dispatcher = null;
+
+    private $key_attributes = [];
+
+    /**
+     * FeedBuilderService constructor.
+     * @param EventDispatcherInterface $dispatchers
+     */
+    public function __construct(
+        EventDispatcherInterface $dispatcher
+    ) {
+        $this->dispatcher = $dispatcher;
+    }
 
     /**
      * Returns the config file for the feedbuilder, see the feedbuilder.example.php
