@@ -67,8 +67,8 @@ feedbuilder.panelitem = Class.create({
                         name: "root",
                         value: this.data.configuration.root,
                         fieldLabel: t("feedbuilder_form_root")
-                    }
-
+                    },
+                    this.getServiceField(),
                 ]
             },{
                 xtype: "fieldset",
@@ -107,6 +107,20 @@ feedbuilder.panelitem = Class.create({
         });
         return this.form;
     },
+
+    getServiceField : function() {
+        if(!this.data.configuration.service){
+            this.data.configuration.service = 'feedBuilderBundle.defaultFeedBuilderService';
+        }
+
+        return new Ext.form.TextField({
+            xtype: "textfield",
+            name: "service",
+            value: this.data.configuration.service,
+            fieldLabel: t("feedbuilder_service_id"),
+        })
+    },
+
     getUrl: function() {
         var url = '/feedbuilder/'+this.data.text;
         return new Ext.Panel({
