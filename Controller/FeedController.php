@@ -51,6 +51,11 @@ class FeedController extends FrontendController
         $feedbuilder = $this->container->get($containerId);
         $result = $feedbuilder->run($config, $request->get('ignoreCache', false));
 
+        if ($request->get('raw')) {
+            echo $result;
+            exit;
+        }
+
         //@TODO Add check for ipaddress
         switch($request->get('_format')){
             case 'xml':
