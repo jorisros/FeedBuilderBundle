@@ -51,11 +51,6 @@ class FeedController extends FrontendController
         $feedbuilder = $this->container->get($containerId);
         $result = $feedbuilder->run($config, $request->get('ignoreCache', false));
 
-        if ($request->get('raw')) {
-            echo $result;
-            exit;
-        }
-
         //@TODO Add check for ipaddress
         switch($request->get('_format')){
             case 'xml':
@@ -67,6 +62,9 @@ class FeedController extends FrontendController
             case 'html':
                 return $this->HtmlResponse($result, $config);
                 break;
+            case 'raw':
+                echo $result;
+                exit;
         }
 
         throw new NotFoundHttpException('Sorry feed not found.');
