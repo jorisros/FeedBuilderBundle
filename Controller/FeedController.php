@@ -62,6 +62,9 @@ class FeedController extends FrontendController
             case 'html':
                 return $this->HtmlResponse($result, $config);
                 break;
+            case 'raw':
+                echo $result;
+                exit;
         }
 
         throw new NotFoundHttpException('Sorry feed not found.');
