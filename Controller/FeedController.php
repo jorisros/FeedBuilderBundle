@@ -31,7 +31,7 @@ class FeedController extends FrontendController
      *     "/{slug}.{_format}",
      *     defaults={"_format": "json"},
      *     requirements={
-     *         "_format": "json|xml|html",
+     *         "_format": "json|xml|html|raw",
      *         "methods": "GET"
      *     }
      * )
