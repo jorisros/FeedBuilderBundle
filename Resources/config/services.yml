@@ -17,6 +17,18 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    #
+    # COMMANDS
+    #
+
+    FeedBuilderBundle\Command\ExportCommand:
+        public: false
+        tags: ['console.command']
+
+    #
+    # Event listeners
+    #
+
     FeedBuilderBundle\EventListener\ControllerListener:
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController}
@@ -34,9 +46,3 @@ services:
         class: FeedBuilderBundle\Service\FeedBuilderService
         public: true
 
-# add more services, or override services that need manual wiring
-#    FeedBuilderBundle\ExampleClass:
-#        arguments:
-#            - "@service_id"
-#            - "plain_value"
-#            - "%parameter%"
