@@ -31,7 +31,7 @@ class FeedController extends FrontendController
      *     "/{slug}.{_format}",
      *     defaults={"_format": "json"},
      *     requirements={
-     *         "_format": "json|xml|html",
+     *         "_format": "json|xml|html|raw",
      *         "methods": "GET"
      *     }
      * )
@@ -47,7 +47,8 @@ class FeedController extends FrontendController
             throw new NotFoundHttpException('Feed not found.');
         }
 
-        $feedbuilder = new FeedBuilderService($this->get('event_dispatcher'));
+        $containerId = $config->get('service');
+        $feedbuilder = $this->container->get($containerId);
         $result = $feedbuilder->run($config, $request->get('ignoreCache', false));
 
         //@TODO Add check for ipaddress
@@ -61,6 +62,9 @@ class FeedController extends FrontendController
             case 'html':
                 return $this->HtmlResponse($result, $config);
                 break;
+            case 'raw':
+                echo $result;
+                exit;
         }
 
         throw new NotFoundHttpException('Sorry feed not found.');

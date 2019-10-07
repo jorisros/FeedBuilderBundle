@@ -41,3 +41,8 @@ services:
     FeedBuilderBundle\EventListener\ExportExample:
         tags:
             - { name: kernel.event_listener, event: feedbuilder.after.run, method: fileHandler }
+
+    feedBuilderBundle.defaultFeedBuilderService:
+        class: FeedBuilderBundle\Service\FeedBuilderService
+        public: true
+
