@@ -15,8 +15,7 @@ feedbuilder.panelitem = Class.create({
         var activeRadio  = null;
         for(var i =0; i<item.items.items.length; i++){
             if(item.items.items[i].checked){
-
-                if(item.items.items[i].inputValue == 3){
+                if(item.items.items[i].inputValue === 3){
                     Ext.getCmp('feedbuilder_feed_overview-'+this.data.id).show();
                 }
             }
@@ -127,8 +126,7 @@ feedbuilder.panelitem = Class.create({
             value: 'jorisje',
             border: false,
             disabled: false,
-            html: '<b>Urls</b><br>JSON: <a href="'+url+'.json" target="_blank">'+url+'.json</a><br>XML: <a href="'+url+'.xml" target="_blank">'+url+'.xml</a><br>HTML: <a href="'+url+'.html" target="_blank">'+url+'.html</a>'
-
+            html: '<b>Urls</b><br>JSON: <a href="'+url+'.json" target="_blank">'+url+'.json</a><br>XML: <a href="'+url+'.xml" target="_blank">'+url+'.xml</a><br>HTML: <a href="'+url+'.html" target="_blank">'+url+'.html</a><br>RAW: <a href="'+url+'.raw" target="_blank">'+url+'.raw</a>'
         });
 
     },
@@ -166,7 +164,6 @@ feedbuilder.panelitem = Class.create({
         );
     },
     getPathField: function() {
-
         if(!this.data.configuration.path){
             this.data.configuration.path = '/';
         }
@@ -256,6 +253,7 @@ feedbuilder.panelitem = Class.create({
     },
     addLayout: function() {
         var panelButtons = [];
+        var hideOverview = true;
         panelButtons.push('->',{
             text: t("delete"),
             iconCls: "pimcore_icon_delete",
@@ -293,7 +291,17 @@ feedbuilder.panelitem = Class.create({
         this.parentPanel.getEditPanel().add(this.panel);
         this.parentPanel.getEditPanel().setActiveTab(this.panel);
 
-        Ext.getCmp('feedbuilder_feed_overview-'+this.data.id).hide();
+        if (this.data.configuration && this.data.configuration.type && Array.isArray(this.data.configuration.type)) {
+            this.data.configuration.type.forEach(function (item) {
+                if (item.boxLabel === 'Feed' && item.checked === true) {
+                    hideOverview = false;
+                }
+            });
+        }
+
+        if (hideOverview === true) {
+            Ext.getCmp('feedbuilder_feed_overview-' + this.data.id).hide();
+        }
 
         pimcore.layout.refresh();
     },
@@ -343,5 +351,4 @@ feedbuilder.panelitem = Class.create({
 
         pimcore.helpers.showNotification(t("delete"), t("feedbuilder_delete_successfully"), "delete");
     }
-
 });
